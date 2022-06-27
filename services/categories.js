@@ -1,63 +1,38 @@
-const faker = require('faker');
-
 // ! Para usar esta librería hay que implementar in middleware especial
 const boom = require('@hapi/boom');
 
-class CategoryServices {
-  constructor() {
-    this.category = [];
-    this.generate();
-  }
+const { models } = require('./../libs/sequelize');
 
-  generate() {
-    for (let index = 0; index < 100; index++) {
-      this.category.push({
-        id: faker.datatype.uuid(),
-        name: faker.commerce.productName(),
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl(),
-      });
-    }
-  }
+class CategoryServices {
+  constructor() {}
 
   async getCategories() {
-    return this.category;
+    return await models.Category.findAll();
   }
 
   async getCategoryById(id) {
-    const category = await this.category.find((item) => item.id === id);
+    const category = await models.Category.findByPk(id);
     if (!category) {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('Category not found');
     }
     return category;
   }
 
   async create(payload) {
-    const newCategory = {
-      id: faker.datatype.uuid(),
-      ...payload,
-    };
-
-    this.category.push(newCategory);
-    return newCategory;
+    const category = await models.Category.create(payload);
+    return category;
   }
 
   async update(payload, id) {
-    const index = await this.category.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('Product not found');
-    }
-    this.category[index] = payload;
-    return this.category[index];
+    const category = await this.getCategoryById(id);
+    const rta = await category.update(payload);
+    return rta;
   }
 
   async delete(id) {
-    const index = await this.category.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('Product not found');
-    }
-    this.category.splice(index, 1);
-    return id;
+    const category = await this.getCategoryById(id);
+    await category.destroy();
+    return { id };
   }
 }
 

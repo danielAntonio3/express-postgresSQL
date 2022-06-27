@@ -1,62 +1,38 @@
-const faker = require('faker');
-
 // ! Para usar esta librería hay que implementar in middleware especial
 const boom = require('@hapi/boom');
 
+const { models } = require('./../libs/sequelize');
+
 class UsersServices {
-  constructor() {
-    this.users = [];
-    this.generate();
+  constructor() {}
+
+  async getUsers() {
+    return await models.User.findAll();
   }
 
-  generate() {
-    for (let index = 0; index < 100; index++) {
-      this.users.push({
-        id: faker.datatype.uuid(),
-        name: faker.commerce.productName(),
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl(),
-      });
-    }
-  }
-
-  async getCategories() {
-    return this.users;
-  }
-
-  async getCategoryById(id) {
-    const users = await this.users.find((item) => item.id === id);
+  async getUserById(id) {
+    const users = await models.User.findByPk(id);
     if (!users) {
-      throw boom.notFound('Product not found');
+      throw boom.notFound('User not found');
     }
     return users;
   }
 
   async create(payload) {
-    const newUser = {
-      id: faker.datatype.uuid(),
-      ...payload,
-    };
-
-    this.users.push(newUser);
-    return newUser;
+    const user = await models.User.create(payload);
+    return user;
   }
+
   async update(payload, id) {
-    const index = await this.users.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('Product not found');
-    }
-    this.users[index] = payload;
-    return this.users[index];
+    const user = await this.getUserById(id);
+    const rta = user.update(payload);
+    return rta;
   }
 
   async delete(id) {
-    const index = await this.users.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('Product not found');
-    }
-    this.users.splice(index, 1);
-    return id;
+    const user = await this.getUserById(id);
+    await user.destroy();
+    return { id };
   }
 }
 

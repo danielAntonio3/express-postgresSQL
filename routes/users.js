@@ -10,9 +10,9 @@ const {
 const router = new Router();
 const usersServices = new UsersServices();
 
-router.get('/', (req, res) => {
-  const users = usersServices.getCategories();
-  res.json(users);
+router.get('/', async (req, res) => {
+  const users = await usersServices.getUsers();
+  res.json({ data: users });
 });
 
 router.get('/filter', (req, res) => {
@@ -25,8 +25,8 @@ router.get(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const users = await usersServices.getCategoryById(id);
-      res.json(users);
+      const users = await usersServices.getUserById(id);
+      res.json({ data: users });
     } catch (error) {
       next(error);
     }
@@ -62,10 +62,14 @@ router.patch(
 router.delete(
   '/:id',
   validatorHandler(getUserSchema, 'params'),
-  async (req, res) => {
-    const { id } = req.params;
-    const user = await usersServices.delete(id);
-    res.json({ message: 'delete', data: user });
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const user = await usersServices.delete(id);
+      res.json({ message: 'delete', data: user });
+    } catch (error) {
+      next(error);
+    }
   }
 );
 

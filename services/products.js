@@ -1,73 +1,43 @@
-const faker = require('faker');
-
 // ! Para usar esta librería hay que implementar in middleware especial
 const boom = require('@hapi/boom');
 
-class ProductServices {
-  constructor() {
-    this.product = [];
-    this.generate();
-  }
+const { models } = require('./../libs/sequelize');
 
-  async generate() {
-    for (let index = 0; index < 100; index++) {
-      this.product.push({
-        id: faker.datatype.uuid(),
-        name: faker.commerce.productName(),
-        price: parseInt(faker.commerce.price(), 10),
-        image: faker.image.imageUrl(),
-        isBlock: faker.datatype.boolean(),
-      });
-    }
-  }
+class ProductServices {
+  constructor() {}
 
   async getProducts() {
-    return this.product;
+    return await models.Product.findAll();
   }
 
   async getProductById(id) {
     // ! Esta linea es para observar como funcionan los middleware de errores
     // const hola = this.hola();
-    const product = await this.product.find((item) => item.id === id);
+    const product = await models.Product.findByPk(id);
     if (!product) {
       throw boom.notFound('Product not found');
     }
-    if (product.isBlock) {
-      throw boom.conflict('Product is block');
-    }
+    // if (product.isBlock) {
+    //   throw boom.conflict('Product is block');
+    // }
     return product;
   }
 
   async create(payload) {
-    const newProduct = {
-      id: faker.datatype.uuid(),
-      ...payload,
-    };
-
-    this.product.push(newProduct);
-    return newProduct;
+    const product = await models.Product.create(payload);
+    return product;
   }
 
   async update(payload, id) {
-    const index = await this.product.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('Product not found');
-    }
-    const productDB = this.product[index];
-    this.product[index] = {
-      ...productDB,
-      ...payload,
-    };
-    return this.product[index];
+    const product = await this.getProductById(id);
+    const rta = await product.update(payload);
+    return rta;
   }
 
   async delete(id) {
-    const index = await this.product.findIndex((item) => item.id === id);
-    if (index === -1) {
-      throw boom.notFound('Product not found');
-    }
-    this.product.splice(index, 1);
-    return id;
+    const product = await this.getProductById(id);
+    await product.destroy();
+    return { id };
   }
 }
 

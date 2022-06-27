@@ -15,7 +15,7 @@ function errorHandler(err, req, res, next) {
 
 // ! Este middleware funciona para la librería de @hapi/boom
 function boomErrorHandler(err, req, res, next) {
-  console.log('boomErrorHandler');
+  console.log(' ------------------------xasdasdfsd');
   if (err.isBoom) {
     const { output } = err;
     res.status(output.statusCode).json(output.payload);

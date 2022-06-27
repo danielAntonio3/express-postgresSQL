@@ -12,7 +12,7 @@ const categoryServices = new CategoryServices();
 
 router.get('/', async (req, res) => {
   const category = await categoryServices.getCategories();
-  res.json(category);
+  res.json({ data: category });
 });
 
 router.get('/filter', async (req, res) => {
@@ -26,7 +26,7 @@ router.get(
     try {
       const { id } = req.params;
       const category = await categoryServices.getCategoryById(id);
-      res.json(category);
+      res.json({ data: category });
     } catch (error) {
       next(error);
     }
@@ -62,10 +62,14 @@ router.patch(
 router.delete(
   '/:id',
   validatorHandler(getCategorySchema, 'params'),
-  async (req, res) => {
-    const { id } = req.params;
-    const category = await categoryServices.delete(id);
-    res.json({ message: 'delete', data: category });
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const category = await categoryServices.delete(id);
+      res.json({ message: 'delete', data: category });
+    } catch (error) {
+      next(error);
+    }
   }
 );
 

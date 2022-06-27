@@ -12,7 +12,7 @@ const productServices = new ProductServices();
 
 router.get('/', async (req, res) => {
   const products = await productServices.getProducts();
-  res.json(products);
+  res.json({ data: products });
 });
 
 router.get('/filter', async (req, res) => {
@@ -26,7 +26,7 @@ router.get(
     try {
       const { id } = req.params;
       const product = await productServices.getProductById(id);
-      res.json(product);
+      res.json({ data: product });
     } catch (error) {
       next(error);
     }
@@ -62,10 +62,14 @@ router.patch(
 router.delete(
   '/:id',
   validatorHandler(getProductSchema, 'params'),
-  async (req, res) => {
-    const { id } = req.params;
-    const product = await productServices.delete(id);
-    res.json({ message: 'delete', data: product });
+  async (req, res, next) => {
+    try {
+      const { id } = req.params;
+      const product = await productServices.delete(id);
+      res.json({ message: 'delete', data: product });
+    } catch (error) {
+      next(error);
+    }
   }
 );
 
