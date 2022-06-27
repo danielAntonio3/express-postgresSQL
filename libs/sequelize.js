@@ -20,7 +20,8 @@ const sequelize = new Sequelize(URI, { dialect: 'postgres', logging: true });
 
 setupModels(sequelize);
 
+// ! Esto solo debe ser cuando es desarrollo pero es mejor ocupar migraciones
 // Sincronizar los modelos (Crear tablas)
-sequelize.sync();
+// sequelize.sync();
 
 module.exports = sequelize;
