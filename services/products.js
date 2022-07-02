@@ -1,4 +1,4 @@
-// ! Para usar esta librería hay que implementar in middleware especial
+// !  Para usar esta librería hay que implementar in middleware especial
 const boom = require('@hapi/boom');
 
 const { models } = require('./../libs/sequelize');
