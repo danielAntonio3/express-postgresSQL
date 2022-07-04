@@ -33,16 +33,24 @@ const UserSchema = {
     field: 'create_at',
     defaultValue: Sequelize.NOW,
   },
+  // updatedAt: false,
 };
 
 class User extends Model {
-  static associate() {}
+  static associate(models) {
+    // Relación de user -> customer
+    this.hasOne(models.Customer, {
+      as: 'customer',
+      // campo relacionado
+      foreignKey: 'userId',
+    });
+  }
   static config(sequelize) {
     return {
       sequelize,
       tableName: USER_TABLE,
       modelName: 'User',
-      timesTamps: false,
+      timestamps: false,
     };
   }
 }

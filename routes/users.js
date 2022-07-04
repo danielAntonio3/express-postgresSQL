@@ -36,10 +36,14 @@ router.get(
 router.post(
   '/',
   validatorHandler(createUserSchema, 'body'),
-  async (req, res) => {
-    const body = req.body;
-    const user = await usersServices.create(body);
-    res.status(201).json({ message: 'Created', data: user });
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const user = await usersServices.create(body);
+      res.status(201).json({ message: 'Created', data: user });
+    } catch (error) {
+      next(error);
+    }
   }
 );
 

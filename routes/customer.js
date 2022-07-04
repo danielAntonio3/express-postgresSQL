@@ -11,7 +11,7 @@ const router = new Router();
 const customerServices = new CustomerServices();
 
 router.get('/', async (req, res) => {
-  const customer = await customerServices.getCategories();
+  const customer = await customerServices.getCustomers();
   res.json({ data: customer });
 });
 
@@ -25,7 +25,7 @@ router.get(
   async (req, res, next) => {
     try {
       const { id } = req.params;
-      const customer = await customerServices.getCategoryById(id);
+      const customer = await customerServices.getCustomerById(id);
       res.json({ data: customer });
     } catch (error) {
       next(error);
@@ -36,10 +36,14 @@ router.get(
 router.post(
   '/',
   validatorHandler(createCustomerSchema, 'body'),
-  async (req, res) => {
-    const body = req.body;
-    const customer = await customerServices.create(body);
-    res.status(201).json({ message: 'Created', data: customer });
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const customer = await customerServices.create(body);
+      res.status(201).json({ message: 'Created', data: customer });
+    } catch (error) {
+      next(error);
+    }
   }
 );
 

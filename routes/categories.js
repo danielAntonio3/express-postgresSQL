@@ -36,10 +36,14 @@ router.get(
 router.post(
   '/',
   validatorHandler(createCategorySchema, 'body'),
-  async (req, res) => {
-    const body = req.body;
-    const category = await categoryServices.create(body);
-    res.status(201).json({ message: 'Created', data: category });
+  async (req, res, next) => {
+    try {
+      const body = req.body;
+      const category = await categoryServices.create(body);
+      res.status(201).json({ message: 'Created', data: category });
+    } catch (error) {
+      next(error);
+    }
   }
 );
 

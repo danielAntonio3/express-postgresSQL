@@ -1,11 +1,15 @@
+// ! Para usar esta librería hay que implementar in middleware especial
 const boom = require('@hapi/boom');
-const { models } = require('../libs/sequelize');
+
+const { models } = require('./../libs/sequelize');
 
 class CustomerServices {
   constructor() {}
 
   async getCustomers() {
-    return await models.Customer.findAll();
+    return await models.Customer.findAll({
+      include: ['user'],
+    });
   }
 
   async getCustomerById(id) {
@@ -16,8 +20,30 @@ class CustomerServices {
     return customer;
   }
 
-  async create(payload) {
+  // Para crear aparte el customer
+  /* async create(payload) {
     const customer = await models.Customer.create(payload);
+    return customer;
+  } */
+
+  // Crear usuario y customer al mismo tiempo (Forma manual)
+  /* async create(payload) {
+    // Creamos el usuario
+    const user = await models.User.create(payload.user);
+    // Creamos el customer
+    const customer = await models.Customer.create({
+      ...payload,
+      userId: user.id,
+    });
+    return customer;
+  } */
+
+  // Crear usuario y customer al mismo tiempo (Forma con sequelize)
+  async create(payload) {
+    const customer = await models.Customer.create(payload, {
+      // nombre que se coloco en as
+      include: ['user'],
+    });
     return customer;
   }
 

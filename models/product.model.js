@@ -32,6 +32,7 @@ const ProductSchema = {
     field: 'create_at',
     defaultValue: Sequelize.NOW,
   },
+  // updatedAt: false,
 };
 
 class Product extends Model {
@@ -41,7 +42,7 @@ class Product extends Model {
       sequelize,
       tableName: PRODUCT_TABLE,
       modelName: 'Product',
-      timesTamps: false,
+      timestamps: false,
     };
   }
 }

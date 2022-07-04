@@ -1,4 +1,4 @@
-const { ValidationError } = require('sequelize/types');
+const { ValidationError } = require('sequelize');
 
 // ! Todos estos middleware son de tipo error
 function logErrors(err, req, res, next) {

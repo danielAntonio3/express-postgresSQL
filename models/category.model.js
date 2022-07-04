@@ -24,6 +24,7 @@ const CategorySchema = {
     field: 'create_at',
     defaultValue: Sequelize.NOW,
   },
+  // updatedAt: false,
 };
 
 class Category extends Model {
@@ -33,7 +34,7 @@ class Category extends Model {
       sequelize,
       tableName: CATEGORY_TABLE,
       modelName: 'Category',
-      timesTamps: false,
+      timestamps: false,
     };
   }
 }

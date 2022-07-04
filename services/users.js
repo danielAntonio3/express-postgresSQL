@@ -7,7 +7,9 @@ class UsersServices {
   constructor() {}
 
   async getUsers() {
-    return await models.User.findAll();
+    return await models.User.findAll({
+      include: ['customer'],
+    });
   }
 
   async getUserById(id) {

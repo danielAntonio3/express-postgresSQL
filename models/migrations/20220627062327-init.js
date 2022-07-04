@@ -13,8 +13,8 @@ module.exports = {
   },
   //  ! Para revertir cambios rollback
   async down(queryInterface) {
-    await queryInterface.drop(CATEGORY_TABLE);
-    await queryInterface.drop(USER_TABLE);
-    await queryInterface.drop(PRODUCT_TABLE);
+    await queryInterface.dropTable(CATEGORY_TABLE);
+    await queryInterface.dropTable(USER_TABLE);
+    await queryInterface.dropTable(PRODUCT_TABLE);
   },
 };
