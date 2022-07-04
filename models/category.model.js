@@ -28,7 +28,13 @@ const CategorySchema = {
 };
 
 class Category extends Model {
-  static associate() {}
+  // Indicando que category puede tener muchos productos 1:N
+  static associate(models) {
+    this.hasMany(models.Product, {
+      as: 'products',
+      foreignKey: 'categoryId',
+    });
+  }
   static config(sequelize) {
     return {
       sequelize,

@@ -13,6 +13,8 @@ function setupModels(sequelize) {
   // Después las relaciones entre las tablas
   Customer.associate(sequelize.models);
   User.associate(sequelize.models);
+  Category.associate(sequelize.models);
+  Product.associate(sequelize.models);
 }
 
 module.exports = setupModels;

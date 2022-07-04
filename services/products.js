@@ -7,7 +7,7 @@ class ProductServices {
   constructor() {}
 
   async getProducts() {
-    return await models.Product.findAll();
+    return await models.Product.findAll({ include: ['category'] });
   }
 
   async getProductById(id) {
