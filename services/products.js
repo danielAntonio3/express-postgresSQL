@@ -6,8 +6,14 @@ const { models } = require('./../libs/sequelize');
 class ProductServices {
   constructor() {}
 
-  async getProducts() {
-    return await models.Product.findAll({ include: ['category'] });
+  async getProducts(query) {
+    const options = { include: ['category'] };
+    const { limit, offset } = query;
+    if (limit && offset) {
+      options.limit = limit;
+      options.offset = offset;
+    }
+    return await models.Product.findAll(options);
   }
 
   async getProductById(id) {
@@ -24,14 +30,12 @@ class ProductServices {
   }
 
   async create(payload) {
-    const product = await models.Product.create(payload);
-    return product;
+    return await models.Product.create(payload);
   }
 
   async update(payload, id) {
     const product = await this.getProductById(id);
-    const rta = await product.update(payload);
-    return rta;
+    return await product.update(payload);
   }
 
   async delete(id) {

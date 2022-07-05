@@ -5,15 +5,20 @@ const {
   createProductSchema,
   updateProductSchema,
   getProductSchema,
+  queryProductSchema,
 } = require('./../schemas/product');
 
 const router = new Router();
 const productServices = new ProductServices();
 
-router.get('/', async (req, res) => {
-  const products = await productServices.getProducts();
-  res.json({ data: products });
-});
+router.get(
+  '/',
+  validatorHandler(queryProductSchema, 'query'),
+  async (req, res) => {
+    const products = await productServices.getProducts(req.query);
+    res.json({ data: products });
+  }
+);
 
 router.get('/filter', async (req, res) => {
   res.send('i am filter');
