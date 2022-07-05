@@ -1,5 +1,6 @@
 // !  Para usar esta librería hay que implementar in middleware especial
 const boom = require('@hapi/boom');
+const { Op } = require('sequelize');
 
 const { models } = require('./../libs/sequelize');
 
@@ -7,11 +8,20 @@ class ProductServices {
   constructor() {}
 
   async getProducts(query) {
-    const options = { include: ['category'] };
-    const { limit, offset } = query;
+    const options = { include: ['category'], where: {} };
+    const { limit, offset, price, priceMin, priceMax } = query;
     if (limit && offset) {
       options.limit = limit;
       options.offset = offset;
+    }
+    if (price) {
+      options.where.price = price;
+    }
+    if (priceMin && priceMax) {
+      options.where.price = {
+        [Op.gte]: [priceMin],
+        [Op.lte]: [priceMax],
+      };
     }
     return await models.Product.findAll(options);
   }
